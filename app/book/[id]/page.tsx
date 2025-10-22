@@ -2,14 +2,9 @@ import InsideBookClient from "@/app/components/book-components/InsideBookClient"
 import { getBookById } from "@/app/lib/getBookById";
 import type { Metadata } from "next";
 
-// Type for your page component
-interface PageProps {
-  params: { id: string };
-}
-
-// ✅ Correct: generateMetadata argument type
 export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
-  const book = await getBookById(params.id);
+  const { id } = await params; // ✅ await the params
+  const book = await getBookById(id);
 
   if (!book) {
     return {
@@ -24,11 +19,11 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
   };
 }
 
-// ✅ Page component
-export default async function InsideBook({ params }: PageProps) {
-  const book = await getBookById(params.id);
+export default async function InsideBook({ params }: { params: { id: string } }) {
+  const { id } = await params; // ✅ await the params
+  const book = await getBookById(id);
 
   if (!book) return <div>Book not found</div>;
 
-  return <InsideBookClient bookId={params.id} />;
+  return <InsideBookClient bookId={id} />;
 }
